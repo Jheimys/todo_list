@@ -7,17 +7,28 @@
     const editForm = document.getElementById('edit-form')
     const editInput = document.getElementById('edit-input')
     const cancelEditBtn = document.getElementById('cancel-edit-btn')
+    
+    const itens = JSON.parse(localStorage.getItem('itensSalvos')) || []
+    itens.forEach((element) => {
+        createTodo(element)
+    })
 
     let oldInputValue
    
     //Funções
-    const saveTodo = (text) => {
+
+    //Criando os elementos
+    function createTodo (text) {
 
         const todo = document.createElement('div')
         todo.classList.add('todo')
 
         const todoTitle = document.createElement('h3')
-        todoTitle.innerText = text
+        todoTitle.innerText = text.tarefa
+        todoTitle.dataset.id = text.id
+       
+
+        console.log(todoTitle)
 
         todo.appendChild(todoTitle)
 
@@ -40,6 +51,7 @@
 
         todoInput.value = ''
         todoInput.focus()
+
     }
 
     const toggleForms = () => {
@@ -60,15 +72,26 @@
         })
     }
 
-    //Eventos
+    //  Eventos 
     todoForm.addEventListener('submit', (e) => {
         e.preventDefault()
 
         const inputValue = todoInput.value
 
-        if(inputValue) {
-            saveTodo(inputValue)
+        //Criei o obj para trabalhar com id.
+        const novaTarefa = {
+            "tarefa": inputValue
         }
+            
+        if(novaTarefa) {
+            novaTarefa.id = itens.length
+            itens.push(novaTarefa)
+            createTodo(novaTarefa)
+        }
+
+    
+        //salvando itens no localStorage
+        localStorage.setItem('itensSalvos', JSON.stringify(itens))
     })
 
     document.addEventListener('click', (e) => {
@@ -94,6 +117,7 @@
             editInput.value = todoTitle
             oldInputValue = todoTitle
         }
+
     })
 
     cancelEditBtn.addEventListener('click', (e) => {
